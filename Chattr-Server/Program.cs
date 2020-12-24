@@ -15,32 +15,25 @@ namespace Server
             Console.OutputEncoding = Encoding.UTF8;
 
             int recv;
-
             byte[] data = new byte[1024];
+            string input;
 
             IPEndPoint ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
-
             Socket newsock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             newsock.Bind(ipep);
-
             newsock.Listen(10);
 
             Console.WriteLine("Waiting for a client...");
-
             Socket client = newsock.Accept();
 
             IPEndPoint clientep = (IPEndPoint)client.RemoteEndPoint;
-
             Console.WriteLine("Connected with {0} at port {1}", clientep.Address, clientep.Port);
-
-            string welcome = "Welcome to my test server";
+            string welcome = "Welcome to the server";
 
             data = Encoding.UTF8.GetBytes(welcome);
 
             client.Send(data, data.Length, SocketFlags.None);
-
-            string input;
 
             while (true)
             {
@@ -50,25 +43,20 @@ namespace Server
                 recv = client.Receive(data);
 
                 if (recv == 0)
-
                     break;
 
                 Console.WriteLine("Client: " + Encoding.UTF8.GetString(data, 0, recv));
-
                 input = Console.ReadLine();
-
                 Console.WriteLine("You: " + input);
-
                 client.Send(Encoding.UTF8.GetBytes(input));
             }
 
+
             Console.WriteLine("Disconnected from {0}", clientep.Address);
-
             client.Close();
-
             newsock.Close();
-
             Console.ReadLine();
+
 
         }
     }
